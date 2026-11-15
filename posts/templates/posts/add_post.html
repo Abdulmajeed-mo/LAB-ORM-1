@@ -1,0 +1,41 @@
+
+{% extends "posts/base.html" %}
+
+{% block title %}New Post | Blogger{% endblock %}
+
+{% block content %}
+<section>
+    <h1>Create a New Post</h1>
+    <p>Share your thoughts with the world.</p>
+
+    <form method="POST" action="{% url 'posts:add_post' %}">
+        {% csrf_token %}
+
+        <div>
+            <label for="title">Post Title</label>
+            <input
+                type="text"
+                id="title"
+                name="title"
+                maxlength="2048"
+                placeholder="Enter your post title"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="content">Content</label>
+            <textarea
+                id="content"
+                name="content"
+                rows="10"
+                placeholder="Write your story here..."
+                required
+            ></textarea>
+        </div>
+
+        <button type="submit">Publish Post</button>
+        <a href="{% url 'posts:home' %}">Cancel</a>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,43 @@
+
+{% extends "posts/base.html" %}
+{% load static %}
+
+{% block title %}Home | Blogger{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <h1>Stories worth sharing.</h1>
+    <p>Discover ideas, thoughts, and new perspectives.</p>
+
+    <a href="{% url 'posts:add_post' %}">Write a Post</a>
+
+    <img
+        src="{% static 'posts/images/blog-hero.jpg' %}"
+        alt="A peaceful reading space"
+        class="blog-hero-image"
+    >
+</section>
+
+<section class="posts-section">
+    <h2>Latest Posts</h2>
+
+    {% for post in posts %}
+        <article class="post-card">
+            <h3>{{ post.title }}</h3>
+
+            <p class="post-date">
+                Published on
+                {{ post.published_at|date:"F j, Y" }}
+                at
+                {{ post.published_at|date:"g:i A" }}
+            </p>
+
+            <p class="post-content">{{ post.content|linebreaksbr }}</p>
+        </article>
+    {% empty %}
+        <p class="empty-message">
+            No posts published yet. Be the first to write one!
+        </p>
+    {% endfor %}
+</section>
+{% endblock %}

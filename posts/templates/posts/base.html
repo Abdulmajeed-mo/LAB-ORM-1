@@ -1,0 +1,79 @@
+
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Blogger{% endblock %}</title>
+
+    <link
+      rel="icon"
+      type="image/png"
+      href="{% static 'posts/images/logo.png' %}"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="{% static 'posts/css/style.css' %}" />
+  </head>
+
+  <body>
+    <header>
+     
+<nav>
+  <a href="{% url 'posts:home' %}" class="nav-logo" aria-label="Blogger Home">
+    <img
+      src="{% static 'posts/images/logo.png' %}"
+      alt="Blogger"
+      class="site-logo"
+    />
+  </a>
+
+  <a href="{% url 'posts:home' %}" class="nav-home">
+    <span class="material-symbols-rounded" aria-hidden="true">home</span>
+    Home
+  </a>
+
+  <a href="{% url 'posts:add_post' %}" class="nav-new-post">
+    <span class="material-symbols-rounded" aria-hidden="true">edit_square</span>
+    New Post
+  </a>
+</nav>
+
+    </header>
+
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <img
+            src="{% static 'posts/images/logo.png' %}"
+            alt="Blogger"
+            class="footer-logo"
+          />
+          <p>Stories worth sharing.</p>
+        </div>
+
+        <div class="footer-bottom">
+          <span>© 2026 Blogger. All rights reserved.</span>
+          <a href="{% url 'posts:home' %}">Back to Home</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
