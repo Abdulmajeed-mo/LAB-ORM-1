@@ -5,39 +5,145 @@
 {% block title %}Home | Blogger{% endblock %}
 
 {% block content %}
-<section class="hero-section">
-    <h1>Stories worth sharing.</h1>
-    <p>Discover ideas, thoughts, and new perspectives.</p>
-
-    <a href="{% url 'posts:add_post' %}">Write a Post</a>
-
-    <img
-        src="{% static 'posts/images/blog-hero.jpg' %}"
-        alt="A peaceful reading space"
-        class="blog-hero-image"
+<section class="hero-section home-hero">
+    <video
+        class="hero-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        aria-hidden="true"
+        tabindex="-1"
     >
+        <source
+            src="{% static 'posts/videos/blog-hero.mp4' %}"
+            type="video/mp4"
+        />
+    </video>
+
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+        <span class="hero-eyebrow">
+            A SPACE FOR YOUR STORIES
+        </span>
+
+        <h1>Stories worth sharing.</h1>
+
+        <p>
+            Discover fresh perspectives, meaningful ideas,
+            and beautiful stories from everyday life.
+        </p>
+
+        <a
+            href="{% url 'posts:add_post' %}"
+            class="primary-button hero-button"
+        >
+            <span class="material-symbols-rounded" aria-hidden="true">
+                edit_square
+            </span>
+            <span>Write a Post</span>
+        </a>
+    </div>
 </section>
 
-<section class="posts-section">
-    <h2>Latest Posts</h2>
+<section class="posts-section" id="latest-posts">
+    <div class="section-heading">
+        <div>
+            <span class="section-eyebrow">EXPLORE THE JOURNAL</span>
+            <h2>Latest Stories</h2>
+            <p>Thoughts, moments, and stories worth discovering.</p>
+        </div>
+    </div>
 
-    {% for post in posts %}
-        <article class="post-card">
-            <h3>{{ post.title }}</h3>
+    <div class="posts-grid">
+        {% for post in posts %}
+            <article class="post-card">
+                <a
+                    href="{% url 'posts:post_detail' post.id %}"
+                    class="post-image-link"
+                    aria-label="Read {{ post.title }}"
+                >
+                    {% if post.image %}
+                        <img
+                            src="{{ post.image.url }}"
+                            alt="{{ post.title }}"
+                            class="post-image"
+                            loading="lazy"
+                        />
+                    {% else %}
+                        <img
+                            src="{% static 'posts/images/default-post.webp' %}"
+                            alt="Peaceful sea and open book"
+                            class="post-image"
+                            loading="lazy"
+                        />
+                    {% endif %}
+                </a>
 
-            <p class="post-date">
-                Published on
-                {{ post.published_at|date:"F j, Y" }}
-                at
-                {{ post.published_at|date:"g:i A" }}
-            </p>
+                <div class="post-card-body">
+                    <div class="post-meta">
+                        <span class="post-author">
+                            <span
+                                class="material-symbols-rounded"
+                                aria-hidden="true"
+                            >
+                                person
+                            </span>
+                            {{ post.author }}
+                        </span>
 
-            <p class="post-content">{{ post.content|linebreaksbr }}</p>
-        </article>
-    {% empty %}
-        <p class="empty-message">
-            No posts published yet. Be the first to write one!
-        </p>
-    {% endfor %}
+                        <span class="post-date">
+                            {{ post.published_at|date:"M j, Y" }}
+                        </span>
+                    </div>
+
+                    <h3>
+                        <a href="{% url 'posts:post_detail' post.id %}">
+                            {{ post.title }}
+                        </a>
+                    </h3>
+
+                    <p class="post-excerpt">
+                        {{ post.content|striptags|truncatewords:35 }}
+                    </p>
+
+                    <a
+                        href="{% url 'posts:post_detail' post.id %}"
+                        class="read-more"
+                    >
+                        <span>Read More</span>
+                        <span
+                            class="material-symbols-rounded"
+                            aria-hidden="true"
+                        >
+                            arrow_forward
+                        </span>
+                    </a>
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty-state">
+                <span class="material-symbols-rounded" aria-hidden="true">
+                    auto_stories
+                </span>
+
+                <h3>No stories yet</h3>
+
+                <p>
+                    Every great collection begins with its first story.
+                    Be the first to share yours.
+                </p>
+
+                <a
+                    href="{% url 'posts:add_post' %}"
+                    class="primary-button"
+                >
+                    Write the First Post
+                </a>
+            </div>
+        {% endfor %}
+    </div>
 </section>
 {% endblock %}

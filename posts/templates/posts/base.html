@@ -1,10 +1,11 @@
 
 {% load static %}
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="{% if request.COOKIES.theme == 'dark' %}dark{% else %}light{% endif %}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>{% block title %}Blogger{% endblock %}</title>
 
     <link
@@ -14,7 +15,11 @@
     />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
 
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@400;500;600;700&display=swap"
@@ -26,53 +31,104 @@
       rel="stylesheet"
     />
 
-    <link rel="stylesheet" href="{% static 'posts/css/style.css' %}" />
+    <link
+      rel="stylesheet"
+      href="{% static 'posts/css/style.css' %}"
+    />
   </head>
 
   <body>
-    <header>
-     
-<nav>
-  <a href="{% url 'posts:home' %}" class="nav-logo" aria-label="Blogger Home">
-    <img
-      src="{% static 'posts/images/logo.png' %}"
-      alt="Blogger"
-      class="site-logo"
-    />
-  </a>
+    <header class="site-header">
+      <nav class="site-nav" aria-label="Main navigation">
+        <a
+          href="{% url 'posts:home' %}"
+          class="nav-logo"
+          aria-label="Blogger Home"
+        >
+          <img
+            src="{% static 'posts/images/logo.png' %}"
+            alt="Blogger"
+            class="site-logo"
+          />
+        </a>
 
-  <a href="{% url 'posts:home' %}" class="nav-home">
-    <span class="material-symbols-rounded" aria-hidden="true">home</span>
-    Home
-  </a>
+        <a href="{% url 'posts:home' %}" class="nav-link nav-home">
+          <span class="material-symbols-rounded" aria-hidden="true">
+            home
+          </span>
+          <span>Home</span>
+        </a>
 
-  <a href="{% url 'posts:add_post' %}" class="nav-new-post">
-    <span class="material-symbols-rounded" aria-hidden="true">edit_square</span>
-    New Post
-  </a>
-</nav>
+        <div class="nav-actions">
+          <a
+            href="{% url 'posts:add_post' %}"
+            class="nav-link nav-new-post"
+          >
+            <span class="material-symbols-rounded" aria-hidden="true">
+              edit_square
+            </span>
+            <span>New Post</span>
+          </a>
 
+          <form
+            method="POST"
+            action="{% url 'posts:toggle_theme' %}"
+            class="theme-form"
+          >
+            {% csrf_token %}
+
+            <input
+              type="hidden"
+              name="next"
+              value="{{ request.path }}"
+            />
+
+            <button
+              type="submit"
+              class="theme-toggle nav-link"
+              aria-label="Toggle color theme"
+            >
+              {% if request.COOKIES.theme == 'dark' %}
+                <span class="material-symbols-rounded" aria-hidden="true">
+                  light_mode
+                </span>
+                <span>Light Mode</span>
+              {% else %}
+                <span class="material-symbols-rounded" aria-hidden="true">
+                  dark_mode
+                </span>
+                <span>Dark Mode</span>
+              {% endif %}
+            </button>
+          </form>
+        </div>
+      </nav>
     </header>
 
-    <main>
+    <main class="site-main">
       {% block content %}{% endblock %}
     </main>
 
     <footer class="site-footer">
-      <div class="footer-content">
-        <div class="footer-brand">
-          <img
-            src="{% static 'posts/images/logo.png' %}"
-            alt="Blogger"
-            class="footer-logo"
-          />
-          <p>Stories worth sharing.</p>
-        </div>
+      <div class="footer-brand">
+        <img
+          src="{% static 'posts/images/logo.png' %}"
+          alt="Blogger"
+          class="footer-logo"
+        />
 
-        <div class="footer-bottom">
-          <span>© 2026 Blogger. All rights reserved.</span>
-          <a href="{% url 'posts:home' %}">Back to Home</a>
-        </div>
+        <p>Stories worth sharing.</p>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 Blogger. All rights reserved.</span>
+
+        <a href="{% url 'posts:home' %}" class="footer-link">
+          <span>Back to Home</span>
+          <span class="material-symbols-rounded" aria-hidden="true">
+            arrow_forward
+          </span>
+        </a>
       </div>
     </footer>
   </body>
