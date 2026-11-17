@@ -2,14 +2,63 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.utils.http import url_has_allowed_host_and_scheme
+from django.db.models import Q
 
 from .models import Post
 from .forms import PostForm
 
 
 def home(request):
-    posts = Post.objects.filter(is_published=True).order_by("-published_at")
+    posts = Post.objects.filter(
+        is_published=True
+    ).order_by("-published_at", "-id")[:2]
+
     return render(request, "posts/home.html", {"posts": posts})
+
+
+def all_posts(request):
+    search = request.GET.get("search", "").strip()
+    ordering = request.GET.get("ordering", "newest")
+    limit = request.GET.get("limit", "all")
+
+    posts = Post.objects.filter(is_published=True)
+
+    if search:
+        posts = posts.filter(
+            Q(title__icontains=search) |
+            Q(author__icontains=search) |
+            Q(content__icontains=search)
+        )
+
+    ordering_options = {
+        "newest": ("-published_at", "-id"),
+        "oldest": ("published_at", "id"),
+        "title_asc": ("title", "id"),
+        "title_desc": ("-title", "id"),
+    }
+
+    if ordering not in ordering_options:
+        ordering = "newest"
+
+    posts = posts.order_by(*ordering_options[ordering])
+
+    total_posts = posts.count()
+
+    if limit in ["2", "4", "6", "12"]:
+        posts = posts[:int(limit)]
+    else:
+        limit = "all"
+
+    context = {
+        "posts": posts,
+        "search": search,
+        "ordering": ordering,
+        "limit": limit,
+        "total_posts": total_posts,
+        "displayed_posts": len(posts),
+    }
+
+    return render(request, "posts/all_posts.html", context)
 
 
 def add_post(request):

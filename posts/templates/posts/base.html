@@ -35,6 +35,11 @@
       rel="stylesheet"
       href="{% static 'posts/css/style.css' %}"
     />
+
+    <script
+      src="{% static 'posts/js/validation.js' %}"
+      defer
+    ></script>
   </head>
 
   <body>
@@ -52,17 +57,32 @@
           />
         </a>
 
-        <a href="{% url 'posts:home' %}" class="nav-link nav-home">
-          <span class="material-symbols-rounded" aria-hidden="true">
-            home
-          </span>
-          <span>Home</span>
-        </a>
+        <div class="nav-center">
+          <a
+            href="{% url 'posts:home' %}"
+            class="nav-link {% if request.resolver_match.url_name == 'home' %}nav-active{% endif %}"
+          >
+            <span class="material-symbols-rounded" aria-hidden="true">
+              home
+            </span>
+            <span>Home</span>
+          </a>
+
+          <a
+            href="{% url 'posts:all_posts' %}"
+            class="nav-link {% if request.resolver_match.url_name == 'all_posts' %}nav-active{% endif %}"
+          >
+            <span class="material-symbols-rounded" aria-hidden="true">
+              auto_stories
+            </span>
+            <span>The Journal</span>
+          </a>
+        </div>
 
         <div class="nav-actions">
           <a
             href="{% url 'posts:add_post' %}"
-            class="nav-link nav-new-post"
+            class="nav-link {% if request.resolver_match.url_name == 'add_post' %}nav-active{% endif %}"
           >
             <span class="material-symbols-rounded" aria-hidden="true">
               edit_square
@@ -80,7 +100,7 @@
             <input
               type="hidden"
               name="next"
-              value="{{ request.path }}"
+              value="{{ request.get_full_path }}"
             />
 
             <button
